@@ -1,0 +1,30 @@
+server:
+    port: 8888
+
+eureka:
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        service-url:
+            defaultZone: http://127.0.0.1:8761/eureka
+
+spring:
+    application:
+        name: apigateway-service
+    cloud:
+        gateway:
+            routes:
+                - id: alarm-distribution-service
+                  uri: lb://ALARM-DISTRIBUTION-SERVICE
+                  predicates:
+                      - Path=/alarm-distribution-service/**
+                      - Method=GET,POST
+                - id: slack-service
+                  uri: lb://SLACK-SERVICE
+                  predicates:
+                      - Path=/slack-service/
+                      - Method=GET,POST
+#                  filter:
+#                      - RewritePath=/slack-service/(?<segment>.*), /$\{segment}
+            default-filters:
+                - name: GlobalFilter
