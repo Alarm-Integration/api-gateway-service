@@ -10,12 +10,13 @@ eureka:
 
 spring:
   application:
+
     name: apigateway-service
   cloud:
     gateway:
       routes:
         - id: alarm-distribution-service
-          uri: lb://ALARM-DISTRIBUTION-SERVICE
+          uri: lb://139.150.75.239:30001
           predicates:
             - Path=/alarm-distribution-service/**
             - Method=GET,POST
