@@ -19,8 +19,5 @@ spring:
                   predicates:
                       - Path=/alarm-distribution-service/**
                       - Method=GET,POST
-                      - Method=GET,POST
                   filters:
                       - RewritePath=/alarm-distribution-service/(?<segment>.*), /$\{segment}
-            default-filters:
-                - name: GlobalFilter
