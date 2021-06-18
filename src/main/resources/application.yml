@@ -19,12 +19,8 @@ spring:
                   predicates:
                       - Path=/alarm-distribution-service/**
                       - Method=GET,POST
-                - id: slack-service
-                  uri: lb://SLACK-SERVICE
-                  predicates:
-                      - Path=/slack-service/
                       - Method=GET,POST
-#                  filter:
-#                      - RewritePath=/slack-service/(?<segment>.*), /$\{segment}
+                  filters:
+                      - RewritePath=/alarm-distribution-service/(?<segment>.*), /$\{segment}
             default-filters:
                 - name: GlobalFilter
