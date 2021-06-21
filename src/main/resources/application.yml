@@ -2,6 +2,8 @@ server:
   port: 80
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     register-with-eureka: true
     fetch-registry: true
@@ -10,7 +12,6 @@ eureka:
 
 spring:
   application:
-
     name: apigateway-service
   cloud:
     gateway:
