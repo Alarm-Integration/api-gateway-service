@@ -2,11 +2,18 @@ image: docker:19.03.12
 
 stages:
   - build
+  - test
   - deploy
 
 variables:
   CONTAINER_NAME: api-gateway-service
   ENVIROMENT: staging
+
+test:
+  image: gradle:6.9.0-jdk11
+  stage: test
+  script:
+    - gradle test
 
 build:
   stage: build

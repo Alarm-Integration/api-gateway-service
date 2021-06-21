@@ -6,7 +6,7 @@ COPY build.gradle .
 COPY settings.gradle .
 COPY src src
 RUN chmod +x gradlew
-RUN ./gradlew build
+RUN ./gradlew build -x test
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHOT.jar)
 
 FROM adoptopenjdk/openjdk11:alpine-jre
