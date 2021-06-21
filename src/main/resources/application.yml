@@ -18,7 +18,7 @@ spring:
     gateway:
       routes:
         - id: alarm-distribution-service
-          uri: lb://ALARM-DISTRIBUTION-SERVICE:30000
+          uri: lb://ALARM-DISTRIBUTION-SERVICE
           predicates:
             - Path=/alarm-distribution-service/**
             - Method=GET,POST
