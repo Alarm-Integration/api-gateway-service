@@ -1,0 +1,35 @@
+image: docker:19.03.12
+
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  CONTAINER_NAME: api-gateway-service
+  ENVIROMENT: staging
+
+test:
+  image: gradle:6.9.0-jdk11
+  stage: test
+  script:
+    - gradle test
+
+build:
+  stage: build
+  script:
+    - docker login -u $DOCKER_HUB_ID -p $DOCKER_HUB_PASSWORD
+    - docker build -t $DOCKER_HUB_ID/$IMAGE_NAME .
+    - docker push $DOCKER_HUB_ID/$IMAGE_NAME
+  environment:
+    name: $ENVIROMENT
+
+deploy:
+  stage: deploy
+  script:
+    - docker pull $DOCKER_HUB_ID/$IMAGE_NAME
+    - docker stop $CONTAINER_NAME || true
+    - docker run --rm -d -p $APIGATEWAY_PORT:$APIGATEWAY_PORT -e HOST_IP=$HOST_IP --net $DOCKER_MESH_NETWORK --name $CONTAINER_NAME $DOCKER_HUB_ID/$IMAGE_NAME
+  environment:
+    name: $ENVIROMENT
+    url: $STAGING_SERVER
