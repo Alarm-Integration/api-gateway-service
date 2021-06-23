@@ -26,7 +26,7 @@ build-docker-image:
   environment:
     name: $ENVIRONMENT
 
-deploy-container:
+deploy:
   stage: deploy
   script:
     - docker pull $DOCKER_HUB_ID/$IMAGE_NAME
