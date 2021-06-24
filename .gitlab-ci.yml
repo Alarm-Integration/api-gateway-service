@@ -1,6 +1,8 @@
 image: docker:19.03.12
 
 stages:
+  - test
+  - visualize
   - build
   - deploy
 
@@ -8,17 +10,47 @@ variables:
   CONTAINER_NAME: api-gateway-service
   ENVIRONMENT: staging
 
-build-test:
+test:
+  image: gradle:6.9.0-jdk11
+  stage: test
+  script:
+    - gradle test
+  artifacts:
+    paths:
+      - build/jacoco/jacoco.xml
+
+coverage:
+  stage: visualize
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+  script:
+    - python /opt/cover2cover.py build/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > build/cobertura.xml
+  dependencies:
+    - test
+  artifacts:
+    reports:
+      cobertura: build/cobertura.xml
+
+build:
   image: gradle:6.9.0-jdk11
   stage: build
   script:
-    - gradle build
+    - gradle build -x test
   artifacts:
+    paths:
+      - build/libs/*.jar
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_ID}
+    policy: push
     paths:
       - build/libs/*.jar
 
 build-docker-image:
   stage: build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_ID}
+    policy: pull
+    paths:
+      - build/libs/*.jar
   script:
     - docker login -u $DOCKER_HUB_ID -p $DOCKER_HUB_PASSWORD
     - docker build -t $DOCKER_HUB_ID/$IMAGE_NAME .
