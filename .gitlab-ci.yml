@@ -8,7 +8,6 @@ stages:
 
 variables:
   CONTAINER_NAME: api-gateway-service
-  ENVIRONMENT: staging
 
 test:
   image: gradle:6.9.0-jdk11
@@ -55,8 +54,6 @@ build-docker-image:
     - docker login -u $DOCKER_HUB_ID -p $DOCKER_HUB_PASSWORD
     - docker build -t $DOCKER_HUB_ID/$IMAGE_NAME .
     - docker push $DOCKER_HUB_ID/$IMAGE_NAME
-  environment:
-    name: $ENVIRONMENT
 
 deploy:
   stage: deploy
@@ -68,7 +65,3 @@ deploy:
     --name $CONTAINER_NAME \
     -e CONFIG_SERVER_URL=$CONFIG_SERVER_URL \
     $DOCKER_HUB_ID/$IMAGE_NAME"
-
-  environment:
-    name: $ENVIRONMENT
-    url: $STAGING_SERVER
