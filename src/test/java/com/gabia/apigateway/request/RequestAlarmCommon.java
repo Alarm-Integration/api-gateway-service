@@ -1,15 +1,15 @@
 package com.gabia.apigateway.request;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RequestAlarmCommon {
     private Long groupId;
     private String title;
     private String content;
 
-    private ArrayList<Integer> bookmarks;
+    private List<Integer> bookmarks;
 
-    private ArrayList<Raw> raws;
+    private List<Raw> raws;
 
     public Long getGroupId() {
         return groupId;
@@ -35,19 +35,19 @@ public class RequestAlarmCommon {
         this.content = content;
     }
 
-    public ArrayList<Integer> getBookmarks() {
+    public List<Integer> getBookmarks() {
         return bookmarks;
     }
 
-    public void setBookmarks(ArrayList<Integer> bookmarks) {
+    public void setBookmarks(List<Integer> bookmarks) {
         this.bookmarks = bookmarks;
     }
 
-    public ArrayList<Raw> getRaws() {
+    public List<Raw> getRaws() {
         return raws;
     }
 
-    public void setRaws(ArrayList<Raw> raws) {
+    public void setRaws(List<Raw> raws) {
         this.raws = raws;
     }
 }
