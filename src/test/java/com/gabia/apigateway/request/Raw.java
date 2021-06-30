@@ -1,10 +1,10 @@
 package com.gabia.apigateway.request;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Raw {
     private String appName;
-    private ArrayList<String> address;
+    private List<String> address;
 
     public String getAppName() {
         return appName;
@@ -14,11 +14,11 @@ public class Raw {
         this.appName = appName;
     }
 
-    public ArrayList<String> getAddress() {
+    public List<String> getAddress() {
         return address;
     }
 
-    public void setAddress(ArrayList<String> address) {
+    public void setAddress(List<String> address) {
         this.address = address;
     }
 }
