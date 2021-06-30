@@ -8,14 +8,13 @@ import com.gabia.apigateway.response.APIResponse;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.spec.internal.HttpStatus;
 import org.springframework.cloud.contract.wiremock.WireMockSpring;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 
@@ -53,41 +52,20 @@ class ApiGatewayToAlarmDistributionServiceTests {
         requestAlarmCommon.setGroupId(1L);
         requestAlarmCommon.setTitle("알림 제목");
         requestAlarmCommon.setContent("알림 내용");
-        requestAlarmCommon.setBookmarks(new ArrayList<>() {
-            {
-                add(1);
-                add(2);
-                add(3);
-            }
-        });
+        requestAlarmCommon.setBookmarks(Arrays.asList(1,2,3));
         requestAlarmCommon.setRaws(new ArrayList<>() {
             {
                 Raw raw = new Raw();
                 raw.setAppName("slack");
-                raw.setAddress(new ArrayList<>() {
-                    {
-                        add("U1234");
-                        add("U4321");
-                    }
-                });
+                raw.setAddress(Arrays.asList("U1234", "U4321"));
                 add(raw);
 
                 raw.setAppName("email");
-                raw.setAddress(new ArrayList<>() {
-                    {
-                        add("test@gmail.com");
-                        add("test@naver.com");
-                    }
-                });
+                raw.setAddress(Arrays.asList("test@gmail.com", "test@naver.com"));
                 add(raw);
 
                 raw.setAppName("sms");
-                raw.setAddress(new ArrayList<>() {
-                    {
-                        add("01012341234");
-                        add("01043214321");
-                    }
-                });
+                raw.setAddress(Arrays.asList("01012341234", "01043214321"));
                 add(raw);
             }
         });
@@ -125,42 +103,25 @@ class ApiGatewayToAlarmDistributionServiceTests {
         requestAlarmCommon.setGroupId(0L);
         requestAlarmCommon.setTitle("알림 제목");
         requestAlarmCommon.setContent("알림 내용");
+        requestAlarmCommon.setBookmarks(Arrays.asList(1,2,3));
         requestAlarmCommon.setRaws(new ArrayList<>() {
             {
                 Raw raw = new Raw();
                 raw.setAppName("slack_ng");
-                raw.setAddress(new ArrayList<>() {
-                    {
-                        add("U1234");
-                        add("U4321");
-                    }
-                });
+                raw.setAddress(Arrays.asList("U1234", "U4321"));
                 add(raw);
 
                 raw.setAppName("email_ng");
-                raw.setAddress(new ArrayList<>() {
-                    {
-                        add("test@gmail.com");
-                        add("test@naver.com");
-                    }
-                });
+                raw.setAddress(Arrays.asList("test@gmail.com", "test@naver.com"));
                 add(raw);
 
                 raw.setAppName("sms_ng");
-                raw.setAddress(new ArrayList<>() {
-                    {
-                        add("01012341234");
-                        add("01043214321");
-                    }
-                });
+                raw.setAddress(Arrays.asList("01012341234", "01043214321"));
                 add(raw);
             }
         });
 
         String request = new ObjectMapper().writeValueAsString(requestAlarmCommon);
-
-        APIResponse apiResponse = new APIResponse(" 알람 전송 성공", null);
-
 
         wireMockServer.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/alarm-distribution-service"))
