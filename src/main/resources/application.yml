@@ -8,9 +8,15 @@ spring:
     gateway:
       routes:
         - id: alarm-distribution-service
-          uri: lb://ALARM-DISTRIBUTION-SERVICE
+          uri: lb://alarm-distribution-service
           predicates:
             - Path=/alarm-distribution-service/**
+          filters:
+            - StripPrefix=1
+        - id: slack-service
+          uri: lb://slack-service
+          predicates:
+            - Path=/slack-service/**
             - Method=GET,POST
           filters:
-            - RewritePath=/alarm-distribution-service/(?<segment>.*), /$\{segment}
+            - StripPrefix=1
