@@ -9,5 +9,5 @@ import java.util.List;
 @Setter
 public class Raw {
     private String appName;
-    private List<String> address;
+    private List<String> addresses;
 }

@@ -60,15 +60,15 @@ class ApiGatewayTo3rdPartyServiceTests {
             {
                 Raw raw = new Raw();
                 raw.setAppName("slack");
-                raw.setAddress(Arrays.asList("U1234", "U4321"));
+                raw.setAddresses(Arrays.asList("U1234", "U4321"));
                 add(raw);
 
                 raw.setAppName("email");
-                raw.setAddress(Arrays.asList("test@gmail.com", "test@naver.com"));
+                raw.setAddresses(Arrays.asList("test@gmail.com", "test@naver.com"));
                 add(raw);
 
                 raw.setAppName("sms");
-                raw.setAddress(Arrays.asList("01012341234", "01043214321"));
+                raw.setAddresses(Arrays.asList("01012341234", "01043214321"));
                 add(raw);
             }
         });
@@ -111,15 +111,15 @@ class ApiGatewayTo3rdPartyServiceTests {
             {
                 Raw raw = new Raw();
                 raw.setAppName("slack_ng");
-                raw.setAddress(Arrays.asList("U1234", "U4321"));
+                raw.setAddresses(Arrays.asList("U1234", "U4321"));
                 add(raw);
 
                 raw.setAppName("email_ng");
-                raw.setAddress(Arrays.asList("test@gmail.com", "test@naver.com"));
+                raw.setAddresses(Arrays.asList("test@gmail.com", "test@naver.com"));
                 add(raw);
 
                 raw.setAppName("sms_ng");
-                raw.setAddress(Arrays.asList("01012341234", "01043214321"));
+                raw.setAddresses(Arrays.asList("01012341234", "01043214321"));
                 add(raw);
             }
         });
@@ -250,12 +250,12 @@ class ApiGatewayTo3rdPartyServiceTests {
         String requestToken = "xoxb-2148325514801-2142207279172-ttsneJk3GUgXqkw3dtPPK5bS";
 
         // Response Entity 생성
-        List<Conversation> conversationList = Arrays.asList(
+        List<Conversation> conversations = Arrays.asList(
                 new Conversation("C024C9KFKHP", "프로젝트 팀"),
                 new Conversation("C024CIAO11N", "공지 전파 방")
         );
 
-        APIResponse apiResponse = new APIResponse("채널목록을 조회 했습니다.", conversationList);
+        APIResponse apiResponse = new APIResponse("채널목록을 조회 했습니다.", conversations);
         String response = new ObjectMapper().writeValueAsString(apiResponse);
 
 
