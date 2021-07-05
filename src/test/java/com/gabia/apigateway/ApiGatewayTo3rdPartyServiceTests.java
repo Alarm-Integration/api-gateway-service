@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gabia.apigateway.request.Raw;
 import com.gabia.apigateway.request.RequestAlarmCommon;
 import com.gabia.apigateway.response.APIResponse;
+import com.gabia.apigateway.response.Conversation;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.*;
@@ -15,10 +16,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 
-class ApiGatewayToAlarmDistributionServiceTests {
+class ApiGatewayTo3rdPartyServiceTests {
 
     private static final WireMockServer wireMockServer = new WireMockServer(WireMockSpring.options().port(80));
 
@@ -44,9 +47,9 @@ class ApiGatewayToAlarmDistributionServiceTests {
         wireMockServer.shutdown();
     }
 
-    @DisplayName("정상 요청 성공 시 200 반환")
+    @DisplayName("Alarm-Distribution-Service 로 정상 요청 성공 시 200 반환")
     @Test
-    void Test_Request_API_Gateway_To_Send() throws JsonProcessingException {
+    void Test_Request_API_Gateway_To_Send_Alarm_Distribution() throws JsonProcessingException {
         // Request Entity 생성
         RequestAlarmCommon requestAlarmCommon = new RequestAlarmCommon();
         requestAlarmCommon.setGroupId(1L);
@@ -95,9 +98,9 @@ class ApiGatewayToAlarmDistributionServiceTests {
                 .jsonPath("$.result").isEmpty();
     }
 
-    @DisplayName("잘못된 Request 로 요청시 400 반환")
+    @DisplayName("Alarm-Distribution-Service 로 잘못된 Request 로 요청시 400 반환")
     @Test
-    void Test_Request_API_Gateway_To_Send_Wrong_Request() throws JsonProcessingException {
+    void Test_Request_API_Gateway_To_Send_Wrong_Request_Alarm_Distribution() throws JsonProcessingException {
         // Request Entity 생성
         RequestAlarmCommon requestAlarmCommon = new RequestAlarmCommon();
         requestAlarmCommon.setGroupId(0L);
@@ -138,9 +141,9 @@ class ApiGatewayToAlarmDistributionServiceTests {
                 .expectBody(Void.class);
     }
 
-    @DisplayName("인증 없이 API Gateway 요청시 401 반환")
+    @DisplayName("Alarm-Distribution-Service 로 인증 없이 API Gateway 요청시 401 반환")
     @Test
-    void Test_Request_API_Gateway_To_Send_Without_Authenticated() {
+    void Test_Request_API_Gateway_To_Send_Without_Authenticated_Alarm_Distribution() {
         wireMockServer.stubFor(
                 WireMock.get(WireMock.urlEqualTo("/alarm-distribution-service"))
                         .willReturn(WireMock.aResponse()
@@ -181,9 +184,9 @@ class ApiGatewayToAlarmDistributionServiceTests {
                 .expectStatus().isUnauthorized();
     }
 
-    @DisplayName("잘못된 URL 로 요청시 404 반환")
+    @DisplayName("Alarm-Distribution-Service 로 잘못된 URL 로 요청시 404 반환")
     @Test
-    void Test_Request_API_Gateway_To_Send_Wrong_URL() {
+    void Test_Request_API_Gateway_To_Send_Wrong_URL_Alarm_Distribution() {
         wireMockServer.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/alarm-distribution-service_ng"))
                         .willReturn(WireMock.aResponse()
@@ -193,6 +196,111 @@ class ApiGatewayToAlarmDistributionServiceTests {
                 .uri("/alarm-distribution-service_ng")
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+
+
+
+
+    // Email Endpoints
+    /*
+    - [POST] /verify-email/{email}
+     */
+
+    @DisplayName("Email-Service 로 정상 요청 성공 시 200 반환")
+    @Test
+    void Test_Request_API_Gateway_To_Verify_Email() throws JsonProcessingException {
+        // Request Entity 생성
+        String request = "gabia@gabia.com";
+
+        // Response Entity 생성
+        APIResponse apiResponse = new APIResponse("인증 메일 발송 완료", null);
+        String response = new ObjectMapper().writeValueAsString(apiResponse);
+
+
+        wireMockServer.stubFor(
+                WireMock.post(WireMock.urlEqualTo(String.format("/email-service/verify-email/%s", request)))
+                        .willReturn(WireMock.aResponse()
+                                .withStatus(HttpStatus.OK)
+                                .withBody(response))
+        );
+
+        client.post()
+                .uri("/email-service/verify-email/gabia@gabia.com")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("인증 메일 발송 완료")
+                .jsonPath("$.result").isEmpty();
+    }
+
+
+
+
+
+    // Slack Endpoints
+    /*
+    - [GET] /channels
+     */
+
+    @DisplayName("Slack-Service 로 정상 요청 성공 시 200 반환")
+    @Test
+    void Test_Request_API_Gateway_To_Get_Channels_Slack() throws JsonProcessingException {
+        // Request Entity 생성
+        String requestToken = "xoxb-2148325514801-2142207279172-ttsneJk3GUgXqkw3dtPPK5bS";
+
+        // Response Entity 생성
+        List<Conversation> conversationList = Arrays.asList(
+                new Conversation("C024C9KFKHP", "프로젝트 팀"),
+                new Conversation("C024CIAO11N", "공지 전파 방")
+        );
+
+        APIResponse apiResponse = new APIResponse("채널목록을 조회 했습니다.", conversationList);
+        String response = new ObjectMapper().writeValueAsString(apiResponse);
+
+
+        wireMockServer.stubFor(
+                WireMock.get(WireMock.urlEqualTo("/slack-service/channels"))
+                        .withHeader("SLACK-TOKEN", equalTo(requestToken))
+                        .willReturn(WireMock.aResponse()
+                                .withStatus(HttpStatus.OK)
+                                .withBody(response))
+        );
+
+        client.get()
+                .uri("/slack-service/channels")
+                .header("SLACK-TOKEN", requestToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("채널목록을 조회 했습니다.")
+                .jsonPath("$.result[0].id").isEqualTo("C024C9KFKHP")
+                .jsonPath("$.result[0].name").isEqualTo("프로젝트 팀")
+                .jsonPath("$.result[1].id").isEqualTo("C024CIAO11N")
+                .jsonPath("$.result[1].name").isEqualTo("공지 전파 방");
+    }
+
+    @DisplayName("Slack-Service 로 잘못된 Token 으로 요청시 401 반환")
+    @Test
+    void Test_Request_API_Gateway_To_Send_Wrong_Request_Slack() {
+
+        // Request Entity 생성
+        String requestToken = "is-not-a-token";
+
+        wireMockServer.stubFor(
+                WireMock.get(WireMock.urlEqualTo("/slack-service/channels"))
+                        .withHeader("SLACK-TOKEN", equalTo(requestToken))
+                        .willReturn(WireMock.aResponse()
+                                .withStatus(HttpStatus.UNAUTHORIZED)
+                                .withBody("잘못된 요청 입니다."))
+        );
+
+        client.get()
+                .uri("/slack-service/channels")
+                .header("SLACK-TOKEN", requestToken)
+                .exchange()
+                .expectStatus().isUnauthorized()
+                .expectBody(Void.class);
     }
 }
 

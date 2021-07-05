@@ -20,10 +20,14 @@ spring:
             - Method=GET,POST
           filters:
             - StripPrefix=1
-        - id: email-service
-          uri: lb://email-service
-          predicates:
-            - Path=/email-service/**
-            - Method=GET,POST
-          filters:
-            - StripPrefix=1
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
