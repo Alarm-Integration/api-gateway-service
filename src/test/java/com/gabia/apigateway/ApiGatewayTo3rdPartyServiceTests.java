@@ -88,7 +88,7 @@ class ApiGatewayTo3rdPartyServiceTests {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.message").isEqualTo("알람 전송 성공")
+                .jsonPath("$.message").isEqualTo(apiResponse.getMessage())
                 .jsonPath("$.result").isEmpty();
     }
 
@@ -219,7 +219,7 @@ class ApiGatewayTo3rdPartyServiceTests {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.message").isEqualTo("인증 메일 발송 완료")
+                .jsonPath("$.message").isEqualTo(apiResponse.getMessage())
                 .jsonPath("$.result").isEmpty();
     }
 
@@ -259,10 +259,10 @@ class ApiGatewayTo3rdPartyServiceTests {
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$.message").isEqualTo("채널목록을 조회 했습니다.")
-                .jsonPath("$.result[0].id").isEqualTo("C024C9KFKHP")
-                .jsonPath("$.result[0].name").isEqualTo("프로젝트 팀")
-                .jsonPath("$.result[1].id").isEqualTo("C024CIAO11N")
-                .jsonPath("$.result[1].name").isEqualTo("공지 전파 방");
+                .jsonPath("$.result[0].id").isEqualTo(conversations.get(0).getId())
+                .jsonPath("$.result[0].name").isEqualTo(conversations.get(0).getName())
+                .jsonPath("$.result[1].id").isEqualTo(conversations.get(1).getId())
+                .jsonPath("$.result[1].name").isEqualTo(conversations.get(1).getName());
     }
 
     @Test
@@ -275,8 +275,7 @@ class ApiGatewayTo3rdPartyServiceTests {
                 WireMock.get(WireMock.urlEqualTo("/slack-service/channels"))
                         .withHeader("SLACK-TOKEN", equalTo(requestToken))
                         .willReturn(WireMock.aResponse()
-                                .withStatus(HttpStatus.UNAUTHORIZED)
-                                .withBody("잘못된 요청 입니다."))
+                                .withStatus(HttpStatus.UNAUTHORIZED))
         );
 
         // then
