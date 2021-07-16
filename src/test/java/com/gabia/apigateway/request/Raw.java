@@ -1,24 +1,28 @@
 package com.gabia.apigateway.request;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
+@Builder
 public class Raw {
     private String appName;
-    private List<String> address;
+    private List<String> addresses;
 
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
+    @Builder
+    public Raw(String appName, List<String> addresses) {
         this.appName = appName;
+        this.addresses = addresses;
     }
 
-    public List<String> getAddress() {
-        return address;
-    }
-
-    public void setAddress(List<String> address) {
-        this.address = address;
+    public static Raw createRaw(String appName, List<String> addresses) {
+        return Raw.builder()
+                .appName(appName)
+                .addresses(addresses)
+                .build();
     }
 }

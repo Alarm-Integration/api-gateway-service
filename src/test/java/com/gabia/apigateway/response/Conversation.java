@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class APIResponse {
-    private String message;
-    private Object result;
+public class Conversation {
+    private String id;
+    private String name;
 }
