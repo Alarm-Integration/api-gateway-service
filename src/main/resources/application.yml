@@ -10,9 +10,18 @@ spring:
         - id: alarm-distribution-service
           uri: lb://alarm-distribution-service
           predicates:
+            - Path=/alarm-distribution-service/v2/api-docs
+          filters:
+            - StripPrefix=1
+
+        - id: alarm-distribution-service
+          uri: lb://alarm-distribution-service
+          predicates:
             - Path=/alarm-distribution-service/**
           filters:
             - StripPrefix=1
+            - AuthorizationHeaderFilter
+
         - id: slack-service
           uri: lb://slack-service
           predicates:
@@ -20,18 +29,25 @@ spring:
             - Method=GET,POST
           filters:
             - StripPrefix=1
+
         - id: email-service
-          uri: lb://emil-service
+          uri: lb://email-service
           predicates:
             - Path=/email-service/**
-            - Method=POST
+
         - id: log-service
           uri: lb://log-service
           predicates:
             - Path=/log-service/**
-            - Method=GET,POST
+
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/signup,/user-service/signin,/user-service/v2/api-docs
+
         - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/user-service/**
-            - Method=GET,POST
+          filters:
+            - AuthorizationHeaderFilter

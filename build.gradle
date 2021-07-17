@@ -28,6 +28,10 @@ ext {
 }
 
 dependencies {
+    //jwt
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    implementation group: 'javax.xml.bind', name: 'jaxb-api'
+    
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
@@ -87,7 +91,9 @@ jacocoTestCoverageVerification {
 
             excludes = ['com.gabia.apigateway.ApiGatewayApplication',
                         'com.gabia.apigateway.configuration.SwaggerHandler',
-                        'com.gabia.apigateway.configuration.SwaggerProvider']
+                        'com.gabia.apigateway.configuration.SwaggerProvider',
+                        'com.gabia.apigateway.filter.*',
+                        'com.gabia.apigateway.util.*']
         }
     }
 }
