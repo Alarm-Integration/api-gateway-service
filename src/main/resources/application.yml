@@ -10,17 +10,17 @@ spring:
         - id: alarm-distribution-service
           uri: lb://alarm-distribution-service
           predicates:
-            - Path=/alarm-distribution-service/**
+            - Path=/alarm-distribution-service/v2/api-docs
           filters:
             - StripPrefix=1
-            - AuthorizationHeaderFilter
 
         - id: alarm-distribution-service
           uri: lb://alarm-distribution-service
           predicates:
-            - Path=/alarm-distribution-service/v2/api-docs
+            - Path=/alarm-distribution-service/**
           filters:
             - StripPrefix=1
+            - AuthorizationHeaderFilter
 
         - id: slack-service
           uri: lb://slack-service
