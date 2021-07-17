@@ -27,12 +27,15 @@ public class SwaggerProvider implements SwaggerResourcesProvider {
 
         routeLocator.getRoutes().subscribe(route -> routes.add(route.getId()));
 
-        gatewayProperties.getRoutes().stream().filter(routeDefinition -> routes.contains(routeDefinition.getId()))
+        gatewayProperties.getRoutes().stream()
+                .filter(routeDefinition -> routes.contains(routeDefinition.getId()))
                 .forEach(routeDefinition -> routeDefinition.getPredicates().stream()
-                        .filter(predicateDefinition -> ("Path").equalsIgnoreCase(predicateDefinition.getName()))
-                        .forEach(predicateDefinition -> resources.add(swaggerResource(routeDefinition.getId(),
-                                predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0")
-                                        .replace("/**", API_URI)))));
+                    .filter(predicateDefinition -> ("Path").equalsIgnoreCase(predicateDefinition.getName()))
+                    .map(predicateDefinition -> predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0"))
+                    .filter(path -> path.contains("/**"))
+                    .forEach(path -> {
+                        resources.add(swaggerResource(routeDefinition.getId(), path.replace("/**", API_URI)));
+                    }));
         return resources;
     }
 
