@@ -31,7 +31,7 @@ spring:
             - StripPrefix=1
 
         - id: email-service
-          uri: lb://emil-service
+          uri: lb://email-service
           predicates:
             - Path=/email-service/**
 
