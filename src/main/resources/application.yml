@@ -20,17 +20,18 @@ spring:
             - Method=GET,POST
           filters:
             - StripPrefix=1
+        - id: email-service
+          uri: lb://emil-service
+          predicates:
+            - Path=/email-service/**
+            - Method=POST
         - id: log-service
           uri: lb://log-service
           predicates:
             - Path=/log-service/**
             - Method=GET,POST
-          filters:
-            - StripPrefix=1
         - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/user-service/**
             - Method=GET,POST
-          filters:
-            - StripPrefix=1
