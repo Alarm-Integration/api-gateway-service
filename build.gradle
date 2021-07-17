@@ -92,8 +92,8 @@ jacocoTestCoverageVerification {
             excludes = ['com.gabia.apigateway.ApiGatewayApplication',
                         'com.gabia.apigateway.configuration.SwaggerHandler',
                         'com.gabia.apigateway.configuration.SwaggerProvider',
-                        'com.gabia.avengers.userservice.util.*',
-                        'com.gabia.avengers.userservice.filter.*']
+                        'com.gabia.apigateway.filter.*',
+                        'com.gabia.apigateway.util.*']
         }
     }
 }
