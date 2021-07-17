@@ -13,6 +13,7 @@ spring:
             - Path=/alarm-distribution-service/**
           filters:
             - StripPrefix=1
+            - AuthorizationHeaderFilter
         - id: slack-service
           uri: lb://slack-service
           predicates:
@@ -33,5 +34,12 @@ spring:
         - id: user-service
           uri: lb://user-service
           predicates:
+            - Path=/user-service/signup,/user-service/signin
+            - Method=POST
+        - id: user-service
+          uri: lb://user-service
+          predicates:
             - Path=/user-service/**
-            - Method=GET,POST
+            - Method=GET,POST,PATCH,DELETE
+          filters:
+            - AuthorizationHeaderFilter
